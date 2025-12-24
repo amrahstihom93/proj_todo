@@ -1,0 +1,57 @@
+steps:
+  # Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/todo-app:$COMMIT_SHA'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/todo-app:latest'
+      - '.'
+
+  # Push the Docker image to Google Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/todo-app:$COMMIT_SHA'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/todo-app:latest'
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'todo-app'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/todo-app:$COMMIT_SHA'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--memory'
+      - '256Mi'
+      - '--cpu'
+      - '1'
+      - '--max-instances'
+      - '10'
+      - '--port'
+      - '80'
+
+# Store images in Google Container Registry
+images:
+  - 'gcr.io/$PROJECT_ID/todo-app:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/todo-app:latest'
+
+# Build timeout
+timeout: 600s
+
+# Substitutions (can be overridden)
+substitutions:
+  _REGION: us-central1
+  _SERVICE_NAME: todo-app
