@@ -51,6 +51,10 @@ images:
 # Build timeout
 timeout: 600s
 
+# Logging configuration
+options:
+  logging: CLOUD_LOGGING_ONLY
+
 # Substitutions (can be overridden)
 substitutions:
   _REGION: us-central1
