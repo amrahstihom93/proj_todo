@@ -373,3 +373,7 @@ Contributions are welcome! This is a learning project for GCP deployment.
 ---
 
 **Built with ❤️ | Deployed on Google Cloud Run**
+
+## 🚀 Deployment Status
+
+✅ Deployed on GCP Cloud Run with automated CI/CD
